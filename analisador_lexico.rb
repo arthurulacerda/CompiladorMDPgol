@@ -101,8 +101,6 @@ $tabela_de_transicao = {
   "q25" => {"D"=>"idf","L"=>"idf","_"=>"idf", "E"=>"idf", "\""=>"idf", "."=>"idf", "{"=>"idf", "}"=>"idf", "("=>"idf", ")"=>"idf", ">"=>"idf", "<"=>"idf", "-"=>"idf", "+"=>"idf", "*"=>"idf", "/"=>"idf", ";"=>"idf", "="=>"idf", "EOF"=>"idf", "ntspace"=>"idf", "other"=>"idf"}, 
   
   "q26" => {"D"=>"idf","L"=>"idf","_"=>"idf", "E"=>"idf", "\""=>"idf", "."=>"idf", "{"=>"idf", "}"=>"idf", "("=>"idf", ")"=>"idf", ">"=>"idf", "<"=>"idf", "-"=>"idf", "+"=>"idf", "*"=>"idf", "/"=>"idf", ";"=>"idf", "="=>"idf", "EOF"=>"idf", "ntspace"=>"idf", "other"=>"idf"}, 
-
-  "idf" => {"D"=>"q00","L"=>"q00","_"=>"q00", "E"=>"q00", "\""=>"q00", "."=>"q00", "{"=>"q00", "}"=>"q00", "("=>"q00", ")"=>"q00", ">"=>"q00", "<"=>"q00", "-"=>"q00", "+"=>"q00", "*"=>"idf", "/"=>"q00", ";"=>"q00", "="=>"q00", "EOF"=>"q00", "ntspace"=>"q00", "other"=>"q00"}
 }
 
 # Retorna zero se o caracter for uma letra o nil caso contrario 
@@ -210,6 +208,18 @@ def conclui_lexema (buffer, estado_atual)
   end
 end
 
+# Dado o lexema incompleto, o caracter atual e o estado atual não final, retorna um erro.
+def mensagem_de_erro (buffer, caracter_atual, estado_atual)
+  case estado_atual
+  when "q00"
+    "Caracter '" + caracter_atual + "' não esperado para início de lexema" 
+  when "q02", "qi5", "qr5"
+    "Esperava Digito após '" + buffer + "', em vez de '" + caracter_atual + "'"
+  when "qi4", "qr4"
+    "Esperava Digito ou '+' ou '-' após '" + buffer + "', em vez de '" + caracter_atual + "'"
+  end
+end
+
 while indice_codigo < codigo_fonte.length do
   caracter_atual = codigo_fonte[indice_codigo]
   tipo_caracter = generaliza_caracter caracter_atual
@@ -235,7 +245,9 @@ while indice_codigo < codigo_fonte.length do
       estado_atual = "q00"
     else
     # Se o estado anterior ao indefinido não for final
-      p "Erro na linha: " + linha_codigo.to_s + ", coluna: " + coluna_codigo.to_s 
+      p "Erro na linha " + linha_codigo.to_s + ", coluna " + coluna_codigo.to_s 
+      p "Mensagem de erro: " + mensagem_de_erro(buffer, caracter_atual, estado_atual)
+      exit(1)
     end
   # Se o próximo estado for definido
   else
@@ -248,6 +260,16 @@ while indice_codigo < codigo_fonte.length do
     coluna_codigo = coluna_codigo + 1
   end
 end
+
+if estado_atual.eql? "q08"
+  p "Faltando caracter '\"' para finalizar literal"
+  exit(1)
+elsif estado_atual.eql? "q10"
+  p "Faltando caracter '}' para finalizar comentário"
+  exit(1)
+end
+
+p "Análise Léxica efetuada com sucesso!!!"
 
 # Remova =begin e =end caso queira imprimir a tabela de símbolos
 =begin
