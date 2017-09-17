@@ -1,6 +1,26 @@
-tabela_de_simbolos = Hash.new
+# Estados finais
+estados_finais = ["q01", "q03", "q06", "q07", "q09", "q11", "q12", "q13", "q14", "q15", "q16", "q17", "q18", "q19", "q20", "q21", "q22", "q23", "q24", "q25"]
 
-# Inicia tabela hash com as palavras reservadas
+# Estado atual na tabela.
+estado_atual = "q0"
+
+# Armazena o que está sendo lido antes de chegar ao estado indefinido.
+buffer = ""
+
+# Último caracter lido.
+unidade_buffer = ""
+
+# Código fonte a ser analisado em uma única string.
+codigo_fonte = IO.readlines('texto.alg')
+codigo_fonte = codigo_fonte.join("")
+
+# Índice do último caracter lido no código.
+indice_codigo = 0
+
+# Tabela de símbolos com lexema, token e tipo.
+tabela_de_simbolos = Hash.new
+# Inicia tabela de símbolos com as palavras reservadas.
+# tabela_de_simbolos["lexema"] = ["token", "tipo"]
 tabela_de_simbolos["inicio"] = ["inicio",""]
 tabela_de_simbolos["varinicio"] = ["varinicio",""]
 tabela_de_simbolos["varfim"] = ["varfim",""]
@@ -14,10 +34,7 @@ tabela_de_simbolos["inteiro"] = ["inteiro",""]
 tabela_de_simbolos["literal"] = ["literal",""]
 tabela_de_simbolos["real"] = ["real",""]
 
-# Estado atual na tabela
-estado = 0
-
-# Tabela de transição
+# Tabela de transição.
 tabela_de_transicao = {
   "q00" => {"D"=>"q01","L"=>"q07","_"=>"def", "E"=>"q01", "\""=>"q08", "."=>"def", "{"=>"q10", "}"=>"def", "("=>"q26", ")"=>"q25", ">"=>"q17", "<"=>"q13", "-"=>"q20", "+"=>"q19", "*"=>"q21", "/"=>"q22", ";"=>"q24", "="=>"q23", "EOF"=>"q12", "ntspace"=>"def"}, 
 
@@ -74,3 +91,6 @@ tabela_de_transicao = {
   "def" => {"D"=>"q00","L"=>"q00","_"=>"q00", "E"=>"q00", "\""=>"q00", "."=>"q00", "{"=>"q00", "}"=>"q00", "("=>"q00", ")"=>"q00", ">"=>"q00", "<"=>"q00", "-"=>"q00", "+"=>"q00", "*"=>"q21", "/"=>"q00", ";"=>"q00", "="=>"q00", "EOF"=>"q00", "ntspace"=>"q00"}
 }
 
+while true
+  break
+end
