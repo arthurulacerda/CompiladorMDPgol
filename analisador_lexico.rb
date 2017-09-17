@@ -8,7 +8,7 @@ estado_atual = "q00"
 buffer = ""
 
 # Último caracter lido.
-unidade_buffer = ""
+caracter_atual = ""
 
 # Código fonte a ser analisado em uma única string.
 codigo_fonte = IO.readlines('texto.alg')
@@ -19,6 +19,9 @@ indice_codigo = 0
 
 # Contador de linha
 linha_codigo = 1
+
+# Contador de coluna
+coluna_codigo = 1
 
 # Tabela de símbolos com lexema, token e tipo.
 tabela_de_simbolos = Hash.new
@@ -39,7 +42,7 @@ tabela_de_simbolos["real"] = ["real",""]
 
 # Tabela de transição.
 tabela_de_transicao = {
-  "q00" => {"D"=>"q01","L"=>"q07","_"=>"def", "E"=>"q01", "\""=>"q08", "."=>"def", "{"=>"q10", "}"=>"def", "("=>"q26", ")"=>"q25", ">"=>"q17", "<"=>"q13", "-"=>"q20", "+"=>"q19", "*"=>"q21", "/"=>"q22", ";"=>"q24", "="=>"q23", "EOF"=>"q12", "ntspace"=>"def", "other"=>"ERRO"}, 
+  "q00" => {"D"=>"q01","L"=>"q07","_"=>"def", "E"=>"q01", "\""=>"q08", "."=>"def", "{"=>"q10", "}"=>"def", "("=>"q26", ")"=>"q25", ">"=>"q17", "<"=>"q13", "-"=>"q20", "+"=>"q19", "*"=>"q21", "/"=>"q22", ";"=>"q24", "="=>"q23", "EOF"=>"q12", "ntspace"=>"def", "other"=>"def"}, 
 
   "q01" => {"D"=>"q01","L"=>"def","_"=>"def", "E"=>"q04", "\""=>"def", "."=>"q02", "{"=>"def", "}"=>"def", "("=>"def", ")"=>"def", ">"=>"def", "<"=>"def", "-"=>"def", "+"=>"def", "*"=>"q21", "/"=>"def", ";"=>"def", "="=>"def", "EOF"=>"def", "ntspace"=>"def", "other"=>"def"}, 
 
@@ -90,6 +93,8 @@ tabela_de_transicao = {
   "q24" => {"D"=>"def","L"=>"def","_"=>"def", "E"=>"def", "\""=>"def", "."=>"def", "{"=>"def", "}"=>"def", "("=>"def", ")"=>"def", ">"=>"def", "<"=>"def", "-"=>"def", "+"=>"def", "*"=>"q21", "/"=>"def", ";"=>"def", "="=>"def", "EOF"=>"def", "ntspace"=>"def", "other"=>"def"}, 
 
   "q25" => {"D"=>"def","L"=>"def","_"=>"def", "E"=>"def", "\""=>"def", "."=>"def", "{"=>"def", "}"=>"def", "("=>"def", ")"=>"def", ">"=>"def", "<"=>"def", "-"=>"def", "+"=>"def", "*"=>"q21", "/"=>"def", ";"=>"def", "="=>"def", "EOF"=>"def", "ntspace"=>"def", "other"=>"def"}, 
+  
+  "q26" => {"D"=>"def","L"=>"def","_"=>"def", "E"=>"def", "\""=>"def", "."=>"def", "{"=>"def", "}"=>"def", "("=>"def", ")"=>"def", ">"=>"def", "<"=>"def", "-"=>"def", "+"=>"def", "*"=>"q21", "/"=>"def", ";"=>"def", "="=>"def", "EOF"=>"def", "ntspace"=>"def", "other"=>"def"}, 
 
   "def" => {"D"=>"q00","L"=>"q00","_"=>"q00", "E"=>"q00", "\""=>"q00", "."=>"q00", "{"=>"q00", "}"=>"q00", "("=>"q00", ")"=>"q00", ">"=>"q00", "<"=>"q00", "-"=>"q00", "+"=>"q00", "*"=>"q21", "/"=>"q00", ";"=>"q00", "="=>"q00", "EOF"=>"q00", "ntspace"=>"q00", "other"=>"q00"}
 }
@@ -123,12 +128,25 @@ def decide_tipo (caracter)
   else
     "other"
   end
-
 end
 
 while true
-  unidade_buffer = codigo_fonte[indice_codigo]
-  tipo_caracter = decide_tipo unidade_buffer
-  p tabela_de_transicao[estado_atual][tipo_caracter]
-  break
+  caracter_atual = codigo_fonte[indice_codigo]
+  tipo_caracter = decide_tipo caracter_atual
+
+  if tabela_de_transicao[estado_atual][tipo_caracter] != "def"
+    estado_atual = tabela_de_transicao[estado_atual][tipo_caracter]
+    buffer << caracter_atual
+    indice_codigo = indice_codigo + 1
+  else
+    p buffer
+    break
+  end
+
+  if caracter_atual.eql? "\n"
+    linha_codigo = linha_codigo + 1
+    coluna_codigo = 1
+  else
+    coluna_codigo = coluna_codigo + 1
+  end
 end
