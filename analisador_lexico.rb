@@ -1,27 +1,27 @@
 # Estados finais
-estados_finais = ["q01", "q03", "qi6", "qr6", "q07", "q09", "q11", "q12", "q13", "q14", "q15", "q16", "q17", "q18", "q19", "q20", "q21", "q22", "q23", "q24", "q25", "q26"]
+$estados_finais = ["q01", "q03", "qi6", "qr6", "q07", "q09", "q11", "q12", "q13", "q14", "q15", "q16", "q17", "q18", "q19", "q20", "q21", "q22", "q23", "q24", "q25", "q26"]
 
 # Estado atual na tabela.
-estado_atual = "q00"
+$estado_atual = "q00"
 
 # Armazena o que está sendo lido antes de chegar ao estado indefinido.
-buffer = ""
+$buffer = ""
 
 # Último caracter lido.
 caracter_atual = ""
 
 # Código fonte a ser analisado em uma única string.
-codigo_fonte = IO.readlines('texto.alg')
-codigo_fonte = codigo_fonte.join("")
+$codigo_fonte = IO.readlines('texto.alg')
+$codigo_fonte = $codigo_fonte.join("")
 
 # Índice do último caracter lido no código.
-indice_codigo = 0
+$indice_codigo = 0
 
 # Contador de linha
-linha_codigo = 1
+$linha_codigo = 1
 
 # Contador de coluna
-coluna_codigo = 1
+$coluna_codigo = 1
 
 # Tabela de símbolos com lexema, token e tipo.
 $tabela_de_simbolos = Hash.new
@@ -137,139 +137,130 @@ def generaliza_caracter (caracter)
 end
 
 # Dado um lexema finalizado em um estado final, grava-o na tabela de simbolos com lexema e tipo se não estiver e imprime na tela.
-def conclui_lexema (buffer, estado_atual)
-  case estado_atual
+def conclui_lexema
+  case $estado_atual
   when "q01", "qi6"
-    unless $tabela_de_simbolos.key? buffer
-      $tabela_de_simbolos[buffer] = ["Num","inteiro"]
-    end
-    p "Lexema: " + buffer + " | Token: " + $tabela_de_simbolos[buffer][0] + " | Tipo: " + $tabela_de_simbolos[buffer][1]
+    "Lexema: " + $buffer + " | Token: Num | Tipo: inteiro"
   
   when "q03", "qr6"
-    unless $tabela_de_simbolos.key? buffer
-      $tabela_de_simbolos[buffer] = ["Num","real"]
-    end
-    p "Lexema: " + buffer + " | Token: " + $tabela_de_simbolos[buffer][0] + " | Tipo: " + $tabela_de_simbolos[buffer][1]
-
+    "Lexema: " + $buffer + " | Token: Num | Tipo: real"
+    
   when "q07"
-    unless $tabela_de_simbolos.key? buffer
-      $tabela_de_simbolos[buffer] = ["id","identificador"]
+    unless $tabela_de_simbolos.key? $buffer
+      $tabela_de_simbolos[$buffer] = ["id","identificador"]
     end
-    p "Lexema: " + buffer + " | Token: " + $tabela_de_simbolos[buffer][0] + " | Tipo: " + $tabela_de_simbolos[buffer][1]
+    "Lexema: " + $buffer + " | Token: " + $tabela_de_simbolos[$buffer][0] + " | Tipo: " + $tabela_de_simbolos[$buffer][1]
 
   when "q09"
-    unless $tabela_de_simbolos.key? buffer
-      $tabela_de_simbolos[buffer] = ["Literal","literal"]
-    end
-    p "Lexema: " + buffer + " | Token: " + $tabela_de_simbolos[buffer][0] + " | Tipo: " + $tabela_de_simbolos[buffer][1]
+    "Lexema: " + $buffer + " | Token: Literal | Tipo: literal"
 
   when "q11"
     p "Comentário reconhecido e ignorado."
 
+  #Devido à importação do arquivo em ruby, esse caso nunca será alcançado.
   when "q12"
-    p "EOF reconhecido e ignorado."
+    "Token: EOF"
 
   when "q13", "q14", "q15", "q17", "q18", "q23"
-    unless $tabela_de_simbolos.key? buffer
-      $tabela_de_simbolos[buffer] = ["OPR",""]
-    end
-    p "Lexema: " + buffer + " | Token: " + $tabela_de_simbolos[buffer][0] + " | Tipo: " + $tabela_de_simbolos[buffer][1]
-
+    "Lexema: " + $buffer + " | Token: OPR"
+    
   when "q16"
-    unless $tabela_de_simbolos.key? buffer
-      $tabela_de_simbolos[buffer] = ["RCB",""]
-    end
-    p "Lexema: " + buffer + " | Token: " + $tabela_de_simbolos[buffer][0] + " | Tipo: " + $tabela_de_simbolos[buffer][1]
+    "Lexema: " + $buffer + " | Token: RCB"
 
   when "q19", "q20", "q21", "q22"
-    unless $tabela_de_simbolos.key? buffer
-      $tabela_de_simbolos[buffer] = ["OPM",""]
-    end
-    p "Lexema: " + buffer + " | Token: " + $tabela_de_simbolos[buffer][0] + " | Tipo: " + $tabela_de_simbolos[buffer][1]
+    "Lexema: " + $buffer + " | Token: OPM"
 
   when "q24"
-    unless $tabela_de_simbolos.key? buffer
-      $tabela_de_simbolos[buffer] = ["PT_V",""]
-    end
-    p "Lexema: " + buffer + " | Token: " + $tabela_de_simbolos[buffer][0] + " | Tipo: " + $tabela_de_simbolos[buffer][1]
+    "Lexema: " + $buffer + " | Token: PT_V"
 
   when "q25"
-    unless $tabela_de_simbolos.key? buffer
-      $tabela_de_simbolos[buffer] = ["FC_P",""]
-    end
-    p "Lexema: " + buffer + " | Token: " + $tabela_de_simbolos[buffer][0] + " | Tipo: " + $tabela_de_simbolos[buffer][1]
+    "Lexema: " + $buffer + " | Token: FC_P"
 
   when "q26"
-    unless $tabela_de_simbolos.key? buffer
-      $tabela_de_simbolos[buffer] = ["AB_P",""]
-    end
-    p "Lexema: " + buffer + " | Token: " + $tabela_de_simbolos[buffer][0] + " | Tipo: " + $tabela_de_simbolos[buffer][1]
+    "Lexema: " + $buffer + " | Token: AB_P"
 
   end
 end
 
 # Dado o lexema incompleto, o caracter atual e o estado atual não final, retorna um erro.
-def mensagem_de_erro (buffer, caracter_atual, estado_atual)
-  case estado_atual
+def mensagem_de_erro (caracter_atual)
+  case $estado_atual
   when "q00"
-    "Caracter '" + caracter_atual + "' não esperado para início de lexema" 
+    "Erro 1: Caracter '" + caracter_atual + "' não esperado para início de lexema" 
   when "q02", "qi5", "qr5"
-    "Esperava Digito após '" + buffer + "', em vez de '" + caracter_atual + "'"
+    "Erro 2: Esperava Digito após '" + $buffer + "', em vez de '" + caracter_atual + "'"
   when "qi4", "qr4"
-    "Esperava Digito ou '+' ou '-' após '" + buffer + "', em vez de '" + caracter_atual + "'"
+    "Erro 3: Esperava Digito ou '+' ou '-' após '" + $buffer + "', em vez de '" + caracter_atual + "'"
   end
 end
 
-while indice_codigo < codigo_fonte.length do
-  caracter_atual = codigo_fonte[indice_codigo]
-  tipo_caracter = generaliza_caracter caracter_atual
+def retorna_proximo_lexema
 
-  # Se o próximo estado for indefinido
-  if $tabela_de_transicao[estado_atual][tipo_caracter] == "idf"
+  while $indice_codigo < $codigo_fonte.length do
+    caracter_atual = $codigo_fonte[$indice_codigo]
+    tipo_caracter = generaliza_caracter caracter_atual
 
-    # Ignora caracteres espaço, quebra de linha e tabulação
-    if (buffer.empty?) && (tipo_caracter.eql? "ntspace")
-      if caracter_atual.eql? "\n"
-        coluna_codigo = 1
-        linha_codigo = linha_codigo + 1
-      else
-        coluna_codigo = coluna_codigo + 1
+    # Se o próximo estado for indefinido
+    if $tabela_de_transicao[$estado_atual][tipo_caracter] == "idf"
+
+      # Ignora caracteres espaço, quebra de linha e tabulação
+      if ($buffer.empty?) && (tipo_caracter.eql? "ntspace")
+        if caracter_atual.eql? "\n"
+          $coluna_codigo = 1
+          $linha_codigo = $linha_codigo + 1
+        else
+          $coluna_codigo = $coluna_codigo + 1
+        end
+        $indice_codigo = $indice_codigo + 1
+        next
       end
-      indice_codigo = indice_codigo + 1
-      next
-    end
-    # Se o estado anterior ao indefinido for final
-    if estados_finais.include? estado_atual
-      conclui_lexema(buffer, estado_atual)
-      buffer = ""
-      estado_atual = "q00"
+
+      # Se o estado anterior ao indefinido for final
+      if $estados_finais.include? $estado_atual
+        retorno = conclui_lexema
+        $buffer = ""
+        $estado_atual = "q00"
+        return retorno unless retorno.eql?("Comentário reconhecido e ignorado.")
+      else
+      # Se o estado anterior ao indefinido não for final
+        p mensagem_de_erro(caracter_atual)
+        p "Erro na linha " + $linha_codigo.to_s + ", coluna " + $coluna_codigo.to_s 
+        exit(1)
+      end
+    # Se o próximo estado for definido
     else
-    # Se o estado anterior ao indefinido não for final
-      p "Erro na linha " + linha_codigo.to_s + ", coluna " + coluna_codigo.to_s 
-      p "Mensagem de erro: " + mensagem_de_erro(buffer, caracter_atual, estado_atual)
+      # Atualiza Estado
+      $estado_atual = $tabela_de_transicao[$estado_atual][tipo_caracter]
+      # Inclui caracter no $buffer
+      $buffer << caracter_atual
+      # Aumenta o índice para avançar ao próximo caracter
+      $indice_codigo = $indice_codigo + 1
+      $coluna_codigo = $coluna_codigo + 1
+
+      if caracter_atual.eql? "\n"
+        $coluna_codigo = 1
+        $linha_codigo = $linha_codigo + 1
+      end
+    end
+  end
+  if $indice_codigo == $codigo_fonte.length
+    if $estado_atual.eql? "q08"
+      p "Erro 4: Faltando caracter '\"' para finalizar literal"
+      p "Erro na linha " + $linha_codigo.to_s + ", coluna " + $coluna_codigo.to_s 
+      exit(1)
+    elsif $estado_atual.eql? "q10"
+      p "Erro 5: Faltando caracter '}' para finalizar comentário"
+      p "Erro na linha " + $linha_codigo.to_s + ", coluna " + $coluna_codigo.to_s 
       exit(1)
     end
-  # Se o próximo estado for definido
-  else
-    # Atualiza Estado
-    estado_atual = $tabela_de_transicao[estado_atual][tipo_caracter]
-    # Inclui caracter no buffer
-    buffer << caracter_atual
-    # Aumenta o índice para avançar ao próximo caracter
-    indice_codigo = indice_codigo + 1
-    coluna_codigo = coluna_codigo + 1
+    "Token: EOF"
   end
 end
 
-if estado_atual.eql? "q08"
-  p "Faltando caracter '\"' para finalizar literal"
-  exit(1)
-elsif estado_atual.eql? "q10"
-  p "Faltando caracter '}' para finalizar comentário"
-  exit(1)
-end
 
-p "Análise Léxica efetuada com sucesso!!!"
+while $indice_codigo < $codigo_fonte.length do
+  p retorna_proximo_lexema
+end
 
 # Remova =begin e =end caso queira imprimir a tabela de símbolos
 =begin
@@ -278,7 +269,9 @@ p "==========Tabela de Simbolos=========="
 $tabela_de_simbolos.each do |key, value|
   p "Token: " + value[0]
   p "Lexema: " + key
-  p "Tipo: " + value[1]
+  if !value[1].empty? 
+    p "Tipo: " + value[1] 
+  end
   p "--------------------------------------"
 end
 =end
