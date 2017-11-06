@@ -410,7 +410,44 @@ while $indice_codigo <= $codigo_fonte.length do
     end
     p $gramatica[action[1..-1]].left + " -> " + $gramatica[action[1..-1]].right
   when "E"
-    p "Error " + action + "| ip: " + $ip + "| topo pilha: " + $pilha[-1]
+    p "Erro " + action + " | ip: " + $ip + " | topo pilha: " + $pilha[-1]
+    p "linha: " + $linha_codigo + "; coluna: " + $coluna_codigo
+    case action
+    when "E00"
+      p "Inicialização incorreta - inicio"
+    when "E01"
+      p "Finalização ausente - $"
+    when "E02"
+      p "Declaração não inicializada - varinicio"
+    when "E03", "E06", "E07", "E08"
+      p "Esperava-se estrutura de controle, leitura, escrita, comando ou finalização - se, leia, escrava, id, fim"
+    when "E04", "E16"
+      p "Esperava-se finalizar declaração ou novo identificador - varfim, id"
+    when "E10"
+      p "Esperava-se identificador para a leitura - id"
+    when "E11"
+      p "Esperava-se número, literal ou identificador para escrita - num, literal, id"
+    when "E12"
+      p "Esperava-se operador de atribuição para comando - rcb"
+    when "E13", "E29", "E30", "E31"
+      p "Esperava-se finalizar estrutura de controle ou iniciar uma nova, leitura, escrita, comando ou finalização - fimse, se, leia, escrava, id, fim"
+    when "E14"
+      p "Esperava-se abrir parênteses para incluir expressão - ("
+    when "E17", "E22", "E23", "E36", "E42"
+      p "Esperava-se ponto vírgula ao final - ;"
+    when "E18"
+      p "Esperava-se tipo da variável na declaração - inteiro, real, literal"
+    when "E27", "E33", "E53", "E55"
+      p "Esperava-se identificador ou número na operação - id, num"
+    when "E43"
+      p "Esperava-se operador matemático para continuar a operação - opm"
+    when "E49"
+      p "Esperava-se fechar parênteses para finalizar expressão - )"
+    when "E50"
+      p "Esperava-se operador relacional para continuar a expressão - opr"
+    when "E54"
+      p "Esperava-se finalizar cabeçalho da estrutura de controle - então"
+    end 
     exit!
   when "A"
     p "Accept"
